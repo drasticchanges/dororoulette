@@ -1,9 +1,11 @@
+# Doro Roulette Simulation
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Russian Roulette Simulation</title>
+    <title>Doro Roulette Simulation</title>
     <style>
         body {
             display: flex;
@@ -17,6 +19,7 @@
             display: none;
             max-width: 80%;
             max-height: 80%;
+            transition: filter 0.1s;
         }
         #tryAgain {
             display: none;
@@ -32,26 +35,36 @@
     </style>
 </head>
 <body>
-    <h1>Russian Roulette Simulation</h1>
+    <h1>Doro Roulette Simulation</h1>
     <img id="image" src="" alt="Result Image">
     <button id="tryButton">Try Your Luck!</button>
     <button id="refreshButton">Refresh Bullets</button>
     <div id="tryAgain">Try Again!</div>
 
+    <audio id="cuteAudio" src="cute.mp3"></audio>
+    <audio id="funnyAudio" src="funny.mp3"></audio>
+
     <script>
         let tries = 6;
         let cuteImage = 'doro.gif'; // Replace with actual path
         let funnyImage = 'blackmen.jpg'; // Replace with actual path
+        let interval;
 
         document.getElementById('tryButton').onclick = function() {
             if (tries > 0) {
                 let randomNum = Math.random();
+                stopAudio();
                 if (tries > 1 && randomNum < (5 / 6)) {
                     document.getElementById('image').src = cuteImage;
                     document.getElementById('image').style.display = 'block';
+                    document.getElementById('cuteAudio').currentTime = 0;
+                    document.getElementById('cuteAudio').play();
                 } else {
                     document.getElementById('image').src = funnyImage;
                     document.getElementById('image').style.display = 'block';
+                    document.getElementById('funnyAudio').currentTime = 0;
+                    document.getElementById('funnyAudio').play();
+                    startRainbowEffect();
                     document.getElementById('tryButton').style.display = 'none';
                     document.getElementById('refreshButton').style.display = 'none';
                     document.getElementById('tryAgain').style.display = 'block';
@@ -61,20 +74,37 @@
         };
 
         document.getElementById('refreshButton').onclick = function() {
-            tries = 6;
-            document.getElementById('image').style.display = 'none';
-            document.getElementById('tryButton').style.display = 'block';
-            document.getElementById('refreshButton').style.display = 'block';
-            document.getElementById('tryAgain').style.display = 'none';
+            resetGame();
         };
 
         document.getElementById('tryAgain').onclick = function() {
+            resetGame();
+        };
+
+        function resetGame() {
+            stopAudio();
             tries = 6;
             document.getElementById('image').style.display = 'none';
             document.getElementById('tryButton').style.display = 'block';
             document.getElementById('refreshButton').style.display = 'block';
             document.getElementById('tryAgain').style.display = 'none';
-        };
+            clearInterval(interval);
+            document.getElementById('image').style.filter = 'none';
+        }
+
+        function stopAudio() {
+            document.getElementById('cuteAudio').pause();
+            document.getElementById('funnyAudio').pause();
+        }
+
+        function startRainbowEffect() {
+            let hue = 0;
+            clearInterval(interval);
+            interval = setInterval(() => {
+                hue = (hue + 5) % 360;
+                document.getElementById('image').style.filter = `hue-rotate(${hue}deg)`;
+            }, 100);
+        }
     </script>
 </body>
 </html>
